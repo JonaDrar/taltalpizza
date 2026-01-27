@@ -195,7 +195,7 @@ export default function MenuClient({ sections }) {
                         <span className="menu-badge">{item.badge}</span>
                       ) : null}
                     </div>
-                    <p>{item.desc}</p>
+                    {item.desc ? <p>{item.desc}</p> : null}
                     {item.price ? (
                       <span className="menu-card-price">{item.price}</span>
                     ) : null}
