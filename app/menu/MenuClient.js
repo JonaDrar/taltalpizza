@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 function normalizeText(value) {
@@ -188,17 +189,48 @@ export default function MenuClient({ sections }) {
             {section.items?.length ? (
               <div className="menu-items-grid">
                 {section.items.map((item) => (
-                  <article className="menu-card" key={item.name}>
-                    <div className="menu-card-header">
-                      <h3>{item.name}</h3>
-                      {item.badge ? (
-                        <span className="menu-badge">{item.badge}</span>
+                  <article
+                    className={`menu-card${
+                      item.image ? " menu-card--with-image" : ""
+                    }`}
+                    key={item.name}
+                  >
+                    <div className="menu-card-body">
+                      <div className="menu-card-text">
+                        <div className="menu-card-header">
+                          <div className="menu-card-title">
+                            <h3>{item.name}</h3>
+                            {item.vegetarian ? (
+                              <span
+                                className="menu-veg"
+                                title="Vegetariano"
+                                aria-label="Vegetariano"
+                              >
+                                🍃
+                              </span>
+                            ) : null}
+                          </div>
+                          {item.badge ? (
+                            <span className="menu-badge">{item.badge}</span>
+                          ) : null}
+                        </div>
+                        {item.desc ? <p>{item.desc}</p> : null}
+                        {item.price ? (
+                          <span className="menu-card-price">{item.price}</span>
+                        ) : null}
+                      </div>
+                      {item.image ? (
+                        <div className="menu-card-media">
+                          <Image
+                            src={item.image}
+                            alt={item.imageAlt ?? item.name}
+                            width={220}
+                            height={220}
+                            className="menu-card-image"
+                          />
+                        </div>
                       ) : null}
                     </div>
-                    {item.desc ? <p>{item.desc}</p> : null}
-                    {item.price ? (
-                      <span className="menu-card-price">{item.price}</span>
-                    ) : null}
                   </article>
                 ))}
               </div>

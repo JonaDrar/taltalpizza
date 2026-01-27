@@ -7,19 +7,24 @@ const siteUrl = getSiteUrl();
 const PIZZAS_CLASICAS = [
   {
     name: "Napolitana",
-    desc: "Queso, salsa, tomate, jamón, aceituna."
+    desc: "Queso, salsa, tomate, jamón, aceituna.",
+    image: "/menu/pizzas/napolitana.png"
   },
   {
     name: "Hawaiana",
-    desc: "Queso, salsa, tomate, jamón, piña."
+    desc: "Queso, salsa, tomate, jamón, piña.",
+    image: "/menu/pizzas/hawaiana.png"
   },
   {
     name: "Americana",
-    desc: "Queso, salsa, tomate, jamón, carne, orégano."
+    desc: "Queso, salsa, tomate, jamón, carne, orégano.",
+    image: "/menu/pizzas/americana.png"
   },
   {
     name: "Vegetariana",
-    desc: "Queso, salsa, tomate, champiñón, aceituna, pimentón."
+    desc: "Queso, salsa, tomate, champiñón, aceituna, pimentón.",
+    vegetarian: true,
+    image: "/menu/pizzas/vegetariana.png"
   },
   {
     name: "Española",
@@ -50,7 +55,8 @@ const PIZZAS_FAVORITAS = [
   },
   {
     name: "Jardinera",
-    desc: "Queso, salsa, choclo, pimentón, cebolla, aceituna."
+    desc: "Queso, salsa, choclo, pimentón, cebolla, aceituna.",
+    vegetarian: true
   },
   {
     name: "Salame",
@@ -189,11 +195,13 @@ const CERVEZA_SIN_ALCOHOL = [
 const CLASICOS = [
   {
     name: "Piña Colada",
-    price: "$6.000"
+    price: "$6.000",
+    image: "/menu/cocteles/clasicos/pinacolada.png"
   },
   {
     name: "Pisco Sour",
-    price: "$5.000"
+    price: "$5.000",
+    image: "/menu/cocteles/clasicos/piscosour.png"
   },
   {
     name: "Catedral",
