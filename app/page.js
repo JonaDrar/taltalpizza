@@ -4,18 +4,20 @@ import { getSiteUrl } from "../lib/site-url";
 
 const siteUrl = getSiteUrl();
 
+// Sin teléfono ni dirección: los que había eran datos de relleno del demo original
+// (+56 9 1234 5678 / Costanera 102) y no corresponden al local. Agregarlos cuando
+// el local los confirme — un dato ausente es mejor que uno falso en un sitio que
+// la gente escanea desde la mesa.
 const restaurantJsonLd = {
   "@context": "https://schema.org",
   "@type": "Restaurant",
   name: "Taltal Pizza",
   image: [`${siteUrl}/brand/logo.jpeg`],
   url: siteUrl,
-  telephone: "+56 9 1234 5678",
   priceRange: "$$",
   servesCuisine: ["Pizza"],
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Costanera 102",
     addressLocality: "Taltal",
     addressCountry: "CL"
   },
@@ -77,17 +79,13 @@ export default function HomePage() {
                 Explorar la carta
               </Link>
               <a className="btn btn-ghost" href="#visitanos">
-                Reservar mesa
+                Cómo visitarnos
               </a>
             </div>
             <div className="hero-info">
               <div>
-                <p className="hero-label">Horario</p>
-                <p className="hero-value">Mié a Dom · 18:30 - 23:30</p>
-              </div>
-              <div>
                 <p className="hero-label">Ubicación</p>
-                <p className="hero-value">Costanera 102, Taltal</p>
+                <p className="hero-value">Taltal, Región de Antofagasta</p>
               </div>
             </div>
           </div>
@@ -184,16 +182,8 @@ export default function HomePage() {
             </p>
             <div className="visit-details">
               <div>
-                <p className="hero-label">Dirección</p>
-                <p className="hero-value">Costanera 102, Taltal</p>
-              </div>
-              <div>
-                <p className="hero-label">Reservas</p>
-                <p className="hero-value">+56 9 1234 5678</p>
-              </div>
-              <div>
-                <p className="hero-label">Delivery</p>
-                <p className="hero-value">Pedidos hasta 23:00</p>
+                <p className="hero-label">Ciudad</p>
+                <p className="hero-value">Taltal, Región de Antofagasta</p>
               </div>
             </div>
           </div>
@@ -201,8 +191,11 @@ export default function HomePage() {
             <h3>Eventos privados</h3>
             <p>
               Armamos menús especiales para celebraciones o reuniones de equipo.
+              Consúltanos en el local.
             </p>
-            <button className="btn btn-ghost">Solicitar cotización</button>
+            <Link className="btn btn-ghost" href="/menu">
+              Ver la carta
+            </Link>
           </div>
         </div>
       </section>
@@ -210,7 +203,7 @@ export default function HomePage() {
       <footer className="footer">
         <div>
           <p className="logo-title">Taltal Pizza</p>
-          <p className="logo-subtitle">Pizza artesanal · Desde 2020</p>
+          <p className="logo-subtitle">Pizza artesanal</p>
         </div>
         <div className="footer-links">
           <Link href="/menu">Carta</Link>
