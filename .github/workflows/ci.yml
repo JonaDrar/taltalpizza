@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # La página solo muestra la foto de un plato si el archivo existe, así que un
+      # slug mal escrito en lib/menu-data.mjs no rompe el build: simplemente deja el
+      # plato sin foto y nadie se entera. Esto lo detecta.
+      - name: Verificar que las fotos del menú existan
+        run: node scripts/verificar-fotos.mjs
