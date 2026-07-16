@@ -181,7 +181,7 @@ export default function MenuClient({ sections }) {
             <header className="menu-section-header">
               <h2>{section.title}</h2>
               {section.subtitle ? <p>{section.subtitle}</p> : null}
-              {section.note ? (
+              {section.note && !section.chips?.length ? (
                 <p className="menu-section-note">{section.note}</p>
               ) : null}
             </header>
@@ -237,12 +237,17 @@ export default function MenuClient({ sections }) {
             ) : null}
 
             {section.chips?.length ? (
-              <div className="menu-list">
-                {section.chips.map((chip) => (
-                  <span className="menu-chip" key={chip}>
-                    {chip}
-                  </span>
-                ))}
+              <div className="menu-extras">
+                {section.note ? (
+                  <p className="menu-extras-title">{section.note}</p>
+                ) : null}
+                <div className="menu-list">
+                  {section.chips.map((chip) => (
+                    <span className="menu-chip" key={chip}>
+                      {chip}
+                    </span>
+                  ))}
+                </div>
               </div>
             ) : null}
           </section>
