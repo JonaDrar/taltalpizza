@@ -54,7 +54,10 @@ const PROPS = {
     "NO vegetables, NO herbs.",
   jugo:
     "Only the whole fruits that this specific juice is made of, as props. NO other fruit, " +
-    "NO vegetables, NO herbs that are not part of the recipe."
+    "NO vegetables, NO herbs that are not part of the recipe.",
+  chelada:
+    "Only a few fresh lime wedges as props. ABSOLUTELY NO tomatoes, NO other fruit, " +
+    "NO vegetables, NO herbs, NO coffee beans around the glass."
 };
 
 const ENCUADRE = {
@@ -113,6 +116,14 @@ const ENCUADRE = {
   jugo: {
     props: "jugo",
     texto: "A fresh juice in a tall clear glass, on a wooden table."
+  },
+  // Chelada/michelada sin alcohol: cerveza en vaso, SIN hielo. El detalle
+  // (sal, merkén, limón) va en el prompt de cada ítem en lib/menu-data.mjs.
+  chelada: {
+    props: "chelada",
+    texto:
+      "A tall clear beer glass with golden alcohol-free beer and a salted rim, NO ice, " +
+      "seen from a 45-degree angle on a wooden table."
   }
 };
 
