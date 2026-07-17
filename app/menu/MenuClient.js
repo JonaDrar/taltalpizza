@@ -139,9 +139,9 @@ export default function MenuClient({ sections }) {
                         {item.sectionTitle}
                       </span>
                     </div>
-                    {item.price ?? item.prices?.[0]?.value ? (
+                    {item.price ?? item.prices?.servir ? (
                       <span className="menu-search-price">
-                        {item.price ?? item.prices[0].value}
+                        {item.price ?? item.prices.servir}
                       </span>
                     ) : null}
                   </button>
@@ -218,18 +218,33 @@ export default function MenuClient({ sections }) {
                         </div>
                         {item.desc ? <p>{item.desc}</p> : null}
                         {item.prices ? (
-                          <ul className="menu-card-prices">
-                            {item.prices.map((tier) => (
-                              <li className="menu-price-row" key={tier.label}>
-                                <span className="menu-price-label">
-                                  {tier.label}
-                                </span>
+                          <div className="menu-card-prices">
+                            <div className="menu-price-row">
+                              <span className="menu-price-label">
+                                Para servir
+                              </span>
+                              <span className="menu-price-value">
+                                {item.prices.servir}
+                              </span>
+                            </div>
+                            <div className="menu-price-group">
+                              <span className="menu-price-group-label">
+                                Para llevar
+                              </span>
+                              <div className="menu-price-row menu-price-row--sub">
+                                <span className="menu-price-label">Mediano</span>
                                 <span className="menu-price-value">
-                                  {tier.value}
+                                  {item.prices.llevar.mediano}
                                 </span>
-                              </li>
-                            ))}
-                          </ul>
+                              </div>
+                              <div className="menu-price-row menu-price-row--sub">
+                                <span className="menu-price-label">Grande</span>
+                                <span className="menu-price-value">
+                                  {item.prices.llevar.grande}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                         ) : item.price ? (
                           <span className="menu-card-price">{item.price}</span>
                         ) : null}
