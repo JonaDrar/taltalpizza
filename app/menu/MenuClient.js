@@ -139,8 +139,10 @@ export default function MenuClient({ sections }) {
                         {item.sectionTitle}
                       </span>
                     </div>
-                    {item.price ? (
-                      <span className="menu-search-price">{item.price}</span>
+                    {item.price ?? item.prices?.[0]?.value ? (
+                      <span className="menu-search-price">
+                        {item.price ?? item.prices[0].value}
+                      </span>
                     ) : null}
                   </button>
                 ))}
@@ -215,7 +217,20 @@ export default function MenuClient({ sections }) {
                           ) : null}
                         </div>
                         {item.desc ? <p>{item.desc}</p> : null}
-                        {item.price ? (
+                        {item.prices ? (
+                          <ul className="menu-card-prices">
+                            {item.prices.map((tier) => (
+                              <li className="menu-price-row" key={tier.label}>
+                                <span className="menu-price-label">
+                                  {tier.label}
+                                </span>
+                                <span className="menu-price-value">
+                                  {tier.value}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : item.price ? (
                           <span className="menu-card-price">{item.price}</span>
                         ) : null}
                       </div>

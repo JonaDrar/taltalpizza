@@ -811,6 +811,41 @@ button {
   font-size: 16px;
 }
 
+.menu-card-prices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+  max-width: 240px;
+}
+
+.menu-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed rgba(107, 43, 44, 0.18);
+  padding-bottom: 4px;
+}
+
+.menu-price-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.menu-price-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.menu-price-value {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .menu-badge {
   display: inline-flex;
   align-items: center;
