@@ -2,3 +2,12 @@ node_modules/
 .next/
 out/
 .env*
+
+# Fotos reales del local que sirven de referencia para generar imágenes (campo
+# `ref` en lib/menu-data.mjs). Se quedan solo en local: al repo llega la foto ya
+# generada en public/menu/, no el original.
+scripts/referencias/
+
+# Salida de `npm run carta`. Se regenera, no se versiona.
+impresion/
+public/impresion/

@@ -13,9 +13,15 @@
  *
  * Es idempotente: salta los platos que ya tienen foto en public/menu/. Por eso se
  * puede ir generando de a poco, corriendo el comando varias veces.
+ *
+ * Casi todas las fotos se dibujan de cero desde el prompt. La excepción son los
+ * platos con `ref` en lib/menu-data.mjs: esos parten de una foto real del local
+ * guardada en scripts/referencias/ y solo se re-fotografían con el look del set.
+ * Esa carpeta está en .gitignore (al repo llega la foto generada, no el original),
+ * así que regenerar uno de esos platos exige tener la foto original en local.
  */
 
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -23,6 +29,8 @@ import { SECTIONS } from "../lib/menu-data.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = path.join(ROOT, "public", "menu");
+// Fotos reales del local que sirven de referencia para los platos con `ref`.
+const REF_DIR = path.join(ROOT, "scripts", "referencias");
 const MODEL = "gpt-image-1";
 const SIZE = "1024x1024";
 const QUALITY = "medium";
@@ -57,7 +65,12 @@ const PROPS = {
     "NO vegetables, NO herbs that are not part of the recipe.",
   chelada:
     "Only a few fresh lime wedges as props. ABSOLUTELY NO tomatoes, NO other fruit, " +
-    "NO vegetables, NO herbs, NO coffee beans around the glass."
+    "NO vegetables, NO herbs, NO coffee beans around the glass.",
+  // Los postres heredaban los props de "comida", que les esparcía verduras y
+  // hierbas frescas alrededor del helado. Aquí no va ningún prop.
+  postre:
+    "Clean and simple, no props at all around the plate. ABSOLUTELY NO vegetables, NO tomatoes, " +
+    "NO herbs, NO basil, NO coffee beans, NO raw ingredients scattered around the dish."
 };
 
 const ENCUADRE = {
@@ -201,11 +214,23 @@ function pendientes({ section, only, force }) {
       const destino = path.join(OUT_DIR, `${item.photo}.png`);
       if (!force && existsSync(destino)) continue;
 
+      // Un plato con `ref` no se dibuja de cero: parte de una foto real del local
+      // y solo se re-fotografía con el look del set. Ver generarDesdeReferencia().
+      let ref = null;
+      if (item.ref) {
+        ref = path.join(REF_DIR, item.ref);
+        if (!existsSync(ref)) {
+          console.error(`Ítem "${item.name}": falta la foto de referencia ${ref}`);
+          process.exit(1);
+        }
+      }
+
       tareas.push({
         slug: item.photo,
         nombre: item.name,
         seccion: seccion.title,
         destino,
+        ref,
         prompt: buildPrompt(item, encuadre)
       });
     }
@@ -214,8 +239,11 @@ function pendientes({ section, only, force }) {
   return tareas;
 }
 
-async function generar(tarea, apiKey) {
-  const res = await fetch("https://api.openai.com/v1/images/generations", {
+const MIME = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp" };
+
+// El plato se dibuja de cero a partir del texto del prompt. Es el caso normal.
+function generarDesdeTexto(tarea, apiKey) {
+  return fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -229,6 +257,37 @@ async function generar(tarea, apiKey) {
       n: 1
     })
   });
+}
+
+// El plato parte de una foto real del local (item.ref). `input_fidelity: high` es
+// lo que hace que el modelo conserve la composición del plato en vez de inventar
+// otro; el prompt solo le pide cambiar el fondo al look del set.
+// Ojo: multipart, y sin Content-Type a mano — fetch pone el boundary solo.
+function generarDesdeReferencia(tarea, apiKey) {
+  const ext = path.extname(tarea.ref).toLowerCase();
+  const tipo = MIME[ext];
+  if (!tipo) throw new Error(`Formato de referencia no soportado: ${ext}`);
+
+  const form = new FormData();
+  form.append("model", MODEL);
+  form.append("prompt", tarea.prompt);
+  form.append("size", SIZE);
+  form.append("quality", QUALITY);
+  form.append("input_fidelity", "high");
+  form.append("n", "1");
+  form.append("image", new File([readFileSync(tarea.ref)], path.basename(tarea.ref), { type: tipo }));
+
+  return fetch("https://api.openai.com/v1/images/edits", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}` },
+    body: form
+  });
+}
+
+async function generar(tarea, apiKey) {
+  const res = tarea.ref
+    ? await generarDesdeReferencia(tarea, apiKey)
+    : await generarDesdeTexto(tarea, apiKey);
 
   if (!res.ok) {
     const detalle = await res.text();
@@ -254,7 +313,8 @@ async function main() {
 
   console.log(`Fotos pendientes: ${tareas.length}`);
   for (const tarea of tareas) {
-    console.log(`  · ${tarea.seccion} → ${tarea.nombre}  (${tarea.slug}.png)`);
+    const origen = tarea.ref ? `  [ref: ${path.basename(tarea.ref)}]` : "";
+    console.log(`  · ${tarea.seccion} → ${tarea.nombre}  (${tarea.slug}.png)${origen}`);
   }
 
   if (args.dryRun) {
